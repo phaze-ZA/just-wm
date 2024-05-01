@@ -1,7 +1,29 @@
+#include "config.h"
 #include <X11/X.h>
 #include <X11/Xlib.h>
 
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
+
+void set_layout(enum LAYOUTS layout_id) {
+  // set layout
+}
+
+void moveWindow(Display *display) {
+  // move window
+}
+
+void register_keys(Display *display) {
+  XGrabKey(display, XKeysymToKeycode(display, XStringToKeysym("F1")), Mod4Mask,
+           DefaultRootWindow(display), True, GrabModeAsync, GrabModeAsync);
+
+  XGrabButton(display, 1, Mod4Mask, DefaultRootWindow(display), True,
+              ButtonPressMask | ButtonReleaseMask | PointerMotionMask,
+              GrabModeAsync, GrabModeAsync, None, None);
+
+  XGrabButton(display, 3, Mod4Mask, DefaultRootWindow(display), True,
+              ButtonPressMask | ButtonReleaseMask | PointerMotionMask,
+              GrabModeAsync, GrabModeAsync, None, None);
+}
 
 int main(void) {
   Display *display;
@@ -12,17 +34,6 @@ int main(void) {
   // Try open X
   if (!(display = XOpenDisplay(0x0)))
     return 1;
-
-  XGrabKey(display, XKeysymToKeycode(display, XStringToKeysym("F1")), Mod1Mask,
-           DefaultRootWindow(display), True, GrabModeAsync, GrabModeAsync);
-
-  XGrabButton(display, 1, Mod1Mask, DefaultRootWindow(display), True,
-              ButtonPressMask | ButtonReleaseMask | PointerMotionMask,
-              GrabModeAsync, GrabModeAsync, None, None);
-
-  XGrabButton(display, 3, Mod1Mask, DefaultRootWindow(display), True,
-              ButtonPressMask | ButtonReleaseMask | PointerMotionMask,
-              GrabModeAsync, GrabModeAsync, None, None);
 
   start.subwindow = None;
 
