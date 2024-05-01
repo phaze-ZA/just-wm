@@ -1,0 +1,3 @@
+xclock &
+xeyes &
+exec ./tinywm
