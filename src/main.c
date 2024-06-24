@@ -12,15 +12,15 @@ void moveWindow(Display *display) {
   // move window
 }
 
-void register_keys(Display *display) {
-  XGrabKey(display, XKeysymToKeycode(display, XStringToKeysym("F1")), Mod4Mask,
+void register_keys(Display *display, int modifier_key) {
+  XGrabKey(display, XKeysymToKeycode(display, XStringToKeysym("F1")), modifier_key,
            DefaultRootWindow(display), True, GrabModeAsync, GrabModeAsync);
 
-  XGrabButton(display, 1, Mod4Mask, DefaultRootWindow(display), True,
+  XGrabButton(display, 1, modifier_key, DefaultRootWindow(display), True,
               ButtonPressMask | ButtonReleaseMask | PointerMotionMask,
               GrabModeAsync, GrabModeAsync, None, None);
 
-  XGrabButton(display, 3, Mod4Mask, DefaultRootWindow(display), True,
+  XGrabButton(display, 3, modifier_key, DefaultRootWindow(display), True,
               ButtonPressMask | ButtonReleaseMask | PointerMotionMask,
               GrabModeAsync, GrabModeAsync, None, None);
 }
