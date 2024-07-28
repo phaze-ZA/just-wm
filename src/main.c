@@ -1,52 +1,56 @@
 #include "config.h"
+#include "winman.h"
 #include <X11/X.h>
 #include <X11/Xlib.h>
+#include <stdio.h>
 
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
-
-void set_layout(enum LAYOUTS layout_id) {
-  // set layout
-}
-
-void moveWindow(Display *display) {
-  // move window
-}
-
-void register_keys(Display *display, int modifier_key) {
-  XGrabKey(display, XKeysymToKeycode(display, XStringToKeysym("F1")), modifier_key,
-           DefaultRootWindow(display), True, GrabModeAsync, GrabModeAsync);
-
-  XGrabButton(display, 1, modifier_key, DefaultRootWindow(display), True,
-              ButtonPressMask | ButtonReleaseMask | PointerMotionMask,
-              GrabModeAsync, GrabModeAsync, None, None);
-
-  XGrabButton(display, 3, modifier_key, DefaultRootWindow(display), True,
-              ButtonPressMask | ButtonReleaseMask | PointerMotionMask,
-              GrabModeAsync, GrabModeAsync, None, None);
-}
+const int MODIFIER = Mod4Mask;
 
 int main(void) {
   Display *display;
   XWindowAttributes attributes;
   XButtonEvent start;
-  XEvent ev;
 
   // Try open X
-  if (!(display = XOpenDisplay(0x0)))
+  if (!(display = create_window_manager()))
     return 1;
+
+  register_keys(display, MODIFIER);
 
   start.subwindow = None;
 
   for (;;) {
+    XEvent ev;
     XNextEvent(display, &ev);
-    if (ev.type == KeyPress && ev.xkey.subwindow != None)
-      XRaiseWindow(display, ev.xkey.subwindow);
-    else if (ev.type == ButtonPress && ev.xbutton.subwindow != None) {
+
+    switch (ev.type) {
+    case CreateNotify:
+      on_create_notify(ev.xcreatewindow, display);
+      break;
+
+    case KeyPress:
+      on_key_press(ev.xkey, display);
+      break;
+
+    case ButtonPress:
+      on_button_press(ev.xbutton, display);
+      break;
+
+    case MotionNotify:
+      // on_motion_notify(ev, start.subwindow, display, attributes)
+      break;
+    default:
+      printf("Unhandled event %d", ev.type);
+    }
+
+    if (ev.type == ButtonPress && ev.xbutton.subwindow != None) {
       XGetWindowAttributes(display, ev.xbutton.subwindow, &attributes);
       start = ev.xbutton;
     } else if (ev.type == MotionNotify && start.subwindow != None) {
       int xdiff = ev.xbutton.x_root - start.x_root;
       int ydiff = ev.xbutton.y_root - start.y_root;
+
       XMoveResizeWindow(
           display, start.subwindow,
           attributes.x + (start.button == 1 ? xdiff : 0),

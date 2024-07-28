@@ -1,18 +1,18 @@
-#include <X11/X.h>
+#ifndef CONFIG_H
+#define CONFIG_H
+
 enum LAYOUTS {
-    FLOATING,
-    MONOCLE,
-    SPLITMONOCLE,
-    FIBONNACI,
-    MAINANDVERTSTACK,
-    MAINANDHORIZSTACK,
-    STACK
+  FLOATING,
+  MONOCLE,
+  SPLITMONOCLE,
+  FIBONNACI,
+  MAINANDVERTSTACK,
+  MAINANDHORIZSTACK,
+  STACK
 };
 
-const int MODIFIER = Mod4Mask;
+extern const int MODIFIER;
 
-enum EVENTS {
-    RESIZE,
-    MOVE,
-    SET_LAYOUT
-};
+enum EVENTS { RESIZE, MOVE, SET_LAYOUT };
+
+#endif // !CONFIG_H

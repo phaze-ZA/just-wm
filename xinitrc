@@ -1,3 +1,4 @@
 xclock &
 xeyes &
-exec ./tinywm
+alacritty &
+exec ./justwm
